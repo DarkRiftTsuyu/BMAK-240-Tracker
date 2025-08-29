@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batman Arkham Knight 240% Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 193, 7, 0.1);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+        }
+
+        .header h1 {
+            color: #ffc107;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+
+        .discord-config {
+            background: rgba(114, 137, 218, 0.1);
+            border: 2px solid #7289da;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .discord-config h3 {
+            color: #7289da;
+            margin-bottom: 15px;
+        }
+
+        .config-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .config-row label {
+            min-width: 120px;
+            color: #b9bbbe;
+        }
+
+        .config-row input {
+            flex: 1;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+            color: white;
+        }
+
+        .config-row input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .profiles-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .profile {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid;
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .profile.profile1 {
+            border-color: #00bcd4;
+        }
+
+        .profile.profile2 {
+            border-color: #e91e63;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .profile1 .profile-header h2 {
+            color: #00bcd4;
+        }
+
+        .profile2 .profile-header h2 {
+            color: #e91e63;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+            max-width: 100%;
+        }
+
+        .profile1 .progress-fill {
+            background: linear-gradient(90deg, #00bcd4, #00acc1);
+        }
+
+        .profile2 .progress-fill {
+            background: linear-gradient(90deg, #e91e63, #c2185b);
+        }
+
+        .progress-text {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .category {
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: background-color 0.2s ease;
+        }
+
+        .category-header:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .category-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #ffc107;
+        }
+
+        .category-progress {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+
+        .requirements-list {
+            display: block;
+        }
+
+        .requirements-list.collapsed {
+            display: none;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 5px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 5px;
+            transition: background-color 0.2s ease;
+        }
+
+        .requirement:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .requirement.completed {
+            background: rgba(76, 175, 80, 0.2);
+        }
+
+        .requirement input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .requirement label {
+            flex: 1;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+
+        .completed-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+
+        .notification-error {
+            background: #f44336;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .overall-progress {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+        }
+
+        .overall-progress h3 {
+            color: #ffc107;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .combined-progress {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .individual-progress {
+            text-align: center;
+        }
+
+        .individual-progress .progress-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 10px;
+            border: 3px solid rgba(255,255,255,0.1);
+            position: relative;
+            font-size: 12px;
+        }
+
+        .profile1-circle {
+            background: conic-gradient(#00bcd4 0deg, #00bcd4 var(--progress1, 0deg), rgba(255,255,255,0.1) var(--progress1, 0deg));
+        }
+
+        .profile2-circle {
+            background: conic-gradient(#e91e63 0deg, #e91e63 var(--progress2, 0deg), rgba(255,255,255,0.1) var(--progress2, 0deg));
+        }
+
+        .controls-section {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .control-button {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: background-color 0.2s ease;
+        }
+
+        .control-button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .queue-status {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #ff9800;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .queue-status.hidden {
+            display: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .modal-content {
+            background: #2f3136;
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 650px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-textarea {
+            width: 100%;
+            height: 120px;
+            background: #40444b;
+            color: white;
+            border: 1px solid #555;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 11px;
+            border-radius: 5px;
+            resize: vertical;
+        }
+
+        .modal-button {
+            background: #5865f2;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .modal-button.copy {
+            background: #57f287;
+        }
+
+        .modal-button.close {
+            background: #ed4245;
+            padding: 12px 25px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .profiles-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .config-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .config-row label {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+
+            .combined-progress {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .modal-content {
+                margin: 20px;
+                max-width: calc(100% - 40px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Batman Arkham Knight 240% Tracker</h1>
+            <p>Track your progress across two profiles and get Discord notifications!</p>
+        </div>
+
+        <div class="discord-config">
+            <h3>Discord Bot Configuration</h3>
+            <div class="config-row">
+                <label>Webhook URL:</label>
+                <input type="url" id="webhookUrl" placeholder="https://discord.com/api/webhooks/..." />
+            </div>
+            <div class="config-row">
+                <label>Profile 1 Name:</label>
+                <input type="text" id="profile1Name" value="Profile 1" />
+            </div>
+            <div class="config-row">
+                <label>Profile 2 Name:</label>
+                <input type="text" id="profile2Name" value="Profile 2" />
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="queue-status hidden" id="queueStatus">0 notifications queued</div>
+            <button class="control-button" onclick="exportData()">Export Progress</button>
+            <button class="control-button" onclick="importData()">Import Progress</button>
+            <button class="control-button" onclick="resetAllProgress()">Reset All</button>
+        </div>
+
+        <div class="overall-progress">
+            <h3>Overall Progress</h3>
+            <div class="combined-progress">
+                <div class="individual-progress">
+                    <div class="progress-circle profile1-circle" id="profile1Circle">0%</div>
+                    <div id="profile1Label">Profile 1</div>
+                </div>
+                <div class="individual-progress">
+                    <div class="progress-circle profile2-circle" id="profile2Circle">0%</div>
+                    <div id="profile2Label">Profile 2</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profiles-container">
+            <!-- Profile 1 -->
+            <div class="profile profile1">
+                <div class="profile-header">
+                    <h2 id="profile1Title">Profile 1</h2>
+                    <span id="profile1Percentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="profile1Progress" style="width: 0%"></div>
+                </div>
+                <div class="progress-text" id="profile1Text">0 / 40 Requirements</div>
+                <div id="profile1Requirements"></div>
+            </div>
+
+            <!-- Profile 2 -->
+            <div class="profile profile2">
+                <div class="profile-header">
+                    <h2 id="profile2Title">Profile 2</h2>
+                    <span id="profile2Percentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="profile2Progress" style="width: 0%"></div>
+                </div>
+                <div class="progress-text" id="profile2Text">0 / 40 Requirements</div>
+                <div id="profile2Requirements"></div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="fileInput" style="display: none;" accept=".json" onchange="handleFileImport(event)">
+
+    <script>
+        // Batman Arkham Knight 240% Requirements
+        const requirements = {
+            "Main Story (23 items)": [
+                "Ace Chemicals Infiltration",
+                "Rendezvous with Oracle",
+                "Rescue Oracle from Scarecrow",
+                "Destroy Arkham Knight's Excavator",
+                "Stop Scarecrow's Plan",
+                "Find and Stop the Arkham Knight",
+                "Confront Scarecrow",
+                "Stop the Knightfall Protocol (First Ending)",
+                "Complete Riddler's Revenge",
+                "Complete Season of Infamy",
+                "Complete Most Wanted Missions",
+                "Activate Knightfall Protocol (True Ending)",
+                "Complete New Game Plus",
+                "Complete New Game Plus with Season of Infamy",
+                "Complete New Game Plus with Most Wanted",
+                "Complete All Story DLC",
+                "Complete Batgirl: A Matter of Family",
+                "Complete Red Hood Story Pack",
+                "Complete Harley Quinn Story Pack",
+                "Complete Nightwing Story Pack",
+                "Complete Robin Story Pack",
+                "Complete Catwoman's Revenge",
+                "Complete GCPD Lockup"
+            ],
+            "Riddler Trophies & Challenges (6 items)": [
+                "Bleake Island Riddler Trophies",
+                "Miagani Island Riddler Trophies",
+                "Founders Island Riddler Trophies",
+                "Riddles Solved",
+                "Race Tracks completed",
+                "Breakable Objects Destroyed"
+            ],
+            "Most Wanted Missions (10 items)": [
+                "Two-Face Bank Heists",
+                "Penguin Arms Caches",
+                "Riddler Trials",
+                "Firefly",
+                "Man-Bat",
+                "Hush Identity Thief Mission",
+                "Professor Pyg",
+                "Azrael",
+                "Jack Ryder Missing Person", 
+                "Militia Checkpoints"
+            ],
+            "AR Challenges (1 item)": [
+                "AR Challenges Completed"
+            ]
+        };
+
+        let profileData = {
+            profile1: {},
+            profile2: {}
+        };
+
+        // Notification queue and rate limiting
+        const notificationQueue = [];
+        let isProcessingQueue = false;
+        const RATE_LIMIT_DELAY = 2500; // 2.5 seconds between requests
+
+        // Load saved data from localStorage
+        function loadData() {
+            try {
+                const saved = localStorage.getItem('arkhamKnightProgress');
+                if (saved) {
+                    profileData = JSON.parse(saved);
+                }
+                
+                // Load profile names and webhook
+                const profile1Name = localStorage.getItem('profile1Name') || 'Profile 1';
+                const profile2Name = localStorage.getItem('profile2Name') || 'Profile 2';
+                const webhookUrl = localStorage.getItem('webhookUrl') || '';
+                
+                document.getElementById('profile1Name').value = profile1Name;
+                document.getElementById('profile2Name').value = profile2Name;
+                document.getElementById('webhookUrl').value = webhookUrl;
+                
+                updateProfileNames();
+            } catch (error) {
+                console.error('Error loading saved data:', error);
+                showNotification('Error loading saved data', true);
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            try {
+                localStorage.setItem('arkhamKnightProgress', JSON.stringify(profileData));
+            } catch (error) {
+                console.error('Error saving data:', error);
+                showNotification('Error saving progress', true);
+            }
+        }
+
+        // Update profile names and labels
+        function updateProfileNames() {
+            const profile1Name = document.getElementById('profile1Name').value;
+            const profile2Name = document.getElementById('profile2Name').value;
+            const webhookUrl = document.getElementById('webhookUrl').value;
+            
+            document.getElementById('profile1Title').textContent = profile1Name;
+            document.getElementById('profile2Title').textContent = profile2Name;
+            document.getElementById('profile1Label').textContent = profile1Name;
+            document.getElementById('profile2Label').textContent = profile2Name;
+            
+            // Save to localStorage
+            localStorage.setItem('profile1Name', profile1Name);
+            localStorage.setItem('profile2Name', profile2Name);
+            localStorage.setItem('webhookUrl', webhookUrl);
+        }
+
+        // Update queue status display
+        function updateQueueStatus() {
+            const queueStatus = document.getElementById('queueStatus');
+            if (notificationQueue.length > 0) {
+                queueStatus.textContent = `${notificationQueue.length} notifications queued`;
+                queueStatus.classList.remove('hidden');
+            } else {
+                queueStatus.classList.add('hidden');
+            }
+        }
+
+        // Add notification to queue
+        function queueNotification(profileName, requirement, category) {
+            const webhookUrl = document.getElementById('webhookUrl').value.trim();
+            
+            if (!webhookUrl) {
+                console.log('No webhook URL configured');
+                return;
+            }
+
+            notificationQueue.push({
+                profileName,
+                requirement,
+                category,
+                timestamp: Date.now()
+            });
+
+            updateQueueStatus();
+            processNotificationQueue();
+        }
+
+        // Process the notification queue with rate limiting
+        async function processNotificationQueue() {
+            if (isProcessingQueue || notificationQueue.length === 0) {
+                return;
+            }
+
+            isProcessingQueue = true;
+
+            while (notificationQueue.length > 0) {
+                const notification = notificationQueue.shift();
+                updateQueueStatus();
+                
+                try {
+                    await sendDiscordNotification(
+                        notification.profileName, 
+                        notification.requirement, 
+                        notification.category
+                    );
+                    
+                    showNotification(`Discord notification sent for ${notification.profileName}!`);
+                    
+                    // Show queue status if there are more notifications
+                    if (notificationQueue.length > 0) {
+                        console.log(`${notificationQueue.length} notifications remaining in queue`);
+                    }
+                } catch (error) {
+                    console.error('Failed to send notification:', error);
+                    // Don't re-queue on error - the sendDiscordNotification already handles retries
+                }
+
+                // Wait before processing next notification (rate limiting)
+                if (notificationQueue.length > 0) {
+                    await new Promise(resolve => setTimeout(resolve, RATE_LIMIT_DELAY));
+                }
+            }
+
+            isProcessingQueue = false;
+            updateQueueStatus();
+        }
+
+        // Send Discord notification with retry logic
+        async function sendDiscordNotification(profileName, requirement, category) {
+            const webhookUrl = document.getElementById('webhookUrl').value.trim();
+            
+            const payload = {
+                embeds: [{
+                    title: "Arkham Knight Progress Update!",
+                    description: `**${profileName}** has completed a new requirement!`,
+                    fields: [
+                        { name: "Category", value: category, inline: true },
+                        { name: "Completed", value: requirement, inline: true }
+                    ],
+                    color: 16776960, // Gold color
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            const maxRetries = 3;
+            let lastError;
+
+            for (let attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    const response = await fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 429) {
+                        // Rate limited - get retry-after header
+                        const retryAfter = response.headers.get('retry-after');
+                        const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : RATE_LIMIT_DELAY;
+                        
+                        console.log(`Rate limited. Waiting ${waitTime}ms before retry ${attempt + 1}/${maxRetries}`);
+                        showNotification(`Rate limited. Retrying in ${Math.ceil(waitTime/1000)}s...`);
+                        
+                        await new Promise(resolve => setTimeout(resolve, waitTime));
+                        continue; // Retry
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    // Success
+                    return;
+
+                } catch (error) {
+                    lastError = error;
+                    console.error(`Attempt ${attempt + 1} failed:`, error);
+                    
+                    if (attempt < maxRetries - 1) {
+                        // Wait before retry
+                        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+                    }
+                }
+            }
+
+            // All attempts failed
+            console.error('All notification attempts failed:', lastError);
+            showWebhookFallback(webhookUrl, payload, profileName);
+            throw lastError;
+        }
+
+        // Show webhook fallback modal
+        function showWebhookFallback(webhookUrl, payload, profileName) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-backdrop';
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h3 style="color: #ffc107; margin-bottom: 20px; text-align: center;">Discord Webhook Alternative</h3>
+                    <p style="margin-bottom: 20px; line-height: 1.5;">Automatic notification failed. Here's your notification ready to send manually:</p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <strong style="color: #7289da;">Webhook URL:</strong>
+                        <div style="background: #40444b; padding: 10px; border-radius: 5px; margin-top: 5px; word-break: break-all; font-family: monospace; font-size: 12px;">
+                            ${webhookUrl}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <strong style="color: #7289da;">JSON Payload:</strong>
+                        <textarea class="modal-textarea" readonly onclick="this.select()">${JSON.stringify(payload, null, 2)}</textarea>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <button class="modal-button copy" onclick="copyToClipboard('${webhookUrl.replace(/'/g, "\\'")}')">Copy Webhook URL</button>
+                        <button class="modal-button copy" onclick="copyToClipboard(\`${JSON.stringify(payload).replace(/`/g, '\\`').replace(/'/g, "\\'")}\`)">Copy JSON Payload</button>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <button class="modal-button close" onclick="this.parentElement.parentElement.remove()">Close</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            showNotification(`Manual Discord notification needed for ${profileName}`, true);
+        }
+
+        // Copy to clipboard helper
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification('Copied to clipboard!');
+                }).catch(() => {
+                    fallbackCopyToClipboard(text);
+                });
+            } else {
+                fallbackCopyToClipboard(text);
+            }
+        }
+
+        // Fallback copy method for older browsers
+        function fallbackCopyToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showNotification('Copied to clipboard!');
+            } catch (err) {
+                showNotification('Unable to copy to clipboard', true);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // Show notification with optional error styling
+        function showNotification(message, isError = false) {
+            const notification = document.createElement('div');
+            notification.className = `completed-notification${isError ? ' notification-error' : ''}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+
+        // Calculate progress for a profile (scaled to 240%)
+        function calculateProgress(profile) {
+            let completed = 0;
+            let total = 0;
+            
+            Object.keys(requirements).forEach(category => {
+                requirements[category].forEach(req => {
+                    total++;
+                    if (profileData[profile][category] && profileData[profile][category][req]) {
+                        completed++;
+                    }
+                });
+            });
+            
+            return { completed, total };
+        }
+
+        // Update progress displays
+        function updateProgress() {
+            ['profile1', 'profile2'].forEach(profile => {
+                const { completed, total } = calculateProgress(profile);
+                // Scale to 240% instead of 100%
+                const percentage = Math.round((completed / total) * 240);
+                // For progress bar display, cap at 100% visual width
+                const barPercentage = Math.min((completed / total) * 100, 100);
+                
+                // Update progress bar (visual width capped at 100%)
+                document.getElementById(`${profile}Progress`).style.width = barPercentage + '%';
+                // Show actual 240% scaled percentage
+                document.getElementById(`${profile}Percentage`).textContent = percentage + '%';
+                document.getElementById(`${profile}Text`).textContent = `${completed} / ${total} Requirements (${percentage}%)`;
+                
+                // Update circular progress (also scaled to 240%)
+                const circle = document.getElementById(`${profile}Circle`);
+                circle.textContent = percentage + '%';
+                const progressVar = profile === 'profile1' ? '--progress1' : '--progress2';
+                // For circular progress, scale the visual representation
+                const circleProgress = Math.min((percentage / 240) * 360, 360);
+                circle.style.setProperty(progressVar, `${circleProgress}deg`);
+            });
+        }
+
+        // Create requirement HTML element
+        function createRequirementHTML(category, requirement, profile) {
+            const isCompleted = profileData[profile][category] && profileData[profile][category][requirement];
+            const checkboxId = `${profile}_${category}_${requirement}`.replace(/[^\w]/g, '_');
+            
+            return `
+                <div class="requirement ${isCompleted ? 'completed' : ''}">
+                    <input type="checkbox" 
+                           id="${checkboxId}" 
+                           ${isCompleted ? 'checked' : ''}
+                           onchange="handleRequirementChange('${profile}', '${category.replace(/'/g, "\\'")}', '${requirement.replace(/'/g, "\\'")}', this.checked)">
+                    <label for="${checkboxId}">${requirement}</label>
+                </div>
+            `;
+        }
+
+        // Handle requirement checkbox change
+        function handleRequirementChange(profile, category, requirement, checked) {
+            if (!profileData[profile][category]) {
+                profileData[profile][category] = {};
+            }
+            
+            profileData[profile][category][requirement] = checked;
+            
+            if (checked) {
+                const profileName = profile === 'profile1' ? 
+                    document.getElementById('profile1Name').value : 
+                    document.getElementById('profile2Name').value;
+                
+                // Queue the notification instead of sending immediately
+                queueNotification(profileName, requirement, category);
+                showNotification(`${requirement} completed for ${profileName}!`);
+            }
+            
+            saveData();
+            updateProgress();
+            renderRequirements();
+        }
+
+        // Render requirements for both profiles
+        function renderRequirements() {
+            ['profile1', 'profile2'].forEach(profile => {
+                const container = document.getElementById(`${profile}Requirements`);
+                let html = '';
+                
+                Object.keys(requirements).forEach(category => {
+                    const categoryCompleted = requirements[category].filter(req => 
+                        profileData[profile][category] && profileData[profile][category][req]
+                    ).length;
+                    
+                    const categoryTotal = requirements[category].length;
+                    const categoryId = `${profile}_${category.replace(/[^\w]/g, '_')}`;
+                    
+                    html += `
+                        <div class="category">
+                            <div class="category-header" onclick="toggleCategory('${categoryId}')">
+                                <span class="category-title">${category}</span>
+                                <span class="category-progress">${categoryCompleted}/${categoryTotal}</span>
+                            </div>
+                            <div class="requirements-list" id="${categoryId}">
+                                ${requirements[category].map(req => createRequirementHTML(category, req, profile)).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            });
+        }
+
+        // Toggle category visibility
+        function toggleCategory(categoryId) {
+            const element = document.getElementById(categoryId);
+            if (element) {
+                element.classList.toggle('collapsed');
+            }
+        }
+
+        // Export progress data
+        function exportData() {
+            try {
+                const exportData = {
+                    profileData: profileData,
+                    profileNames: {
+                        profile1: document.getElementById('profile1Name').value,
+                        profile2: document.getElementById('profile2Name').value
+                    },
+                    webhookUrl: document.getElementById('webhookUrl').value,
+                    exportDate: new Date().toISOString()
+                };
+
+                const dataStr = JSON.stringify(exportData, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `arkham_knight_progress_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showNotification('Progress exported successfully!');
+            } catch (error) {
+                console.error('Export error:', error);
+                showNotification('Failed to export progress', true);
+            }
+        }
+
+        // Import progress data
+        function importData() {
+            document.getElementById('fileInput').click();
+        }
+
+        // Handle file import
+        function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.type !== 'application/json') {
+                showNotification('Please select a valid JSON file', true);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (importedData.profileData) {
+                        profileData = importedData.profileData;
+                    }
+                    
+                    if (importedData.profileNames) {
+                        document.getElementById('profile1Name').value = importedData.profileNames.profile1 || 'Profile 1';
+                        document.getElementById('profile2Name').value = importedData.profileNames.profile2 || 'Profile 2';
+                    }
+                    
+                    if (importedData.webhookUrl) {
+                        document.getElementById('webhookUrl').value = importedData.webhookUrl;
+                    }
+                    
+                    updateProfileNames();
+                    saveData();
+                    renderRequirements();
+                    updateProgress();
+                    
+                    showNotification('Progress imported successfully!');
+                } catch (error) {
+                    console.error('Import error:', error);
+                    showNotification('Failed to import progress - Invalid file format', true);
+                }
+            };
+            
+            reader.readAsText(file);
+            // Clear the input so the same file can be selected again
+            event.target.value = '';
+        }
+
+        // Reset all progress
+        function resetAllProgress() {
+            if (confirm('Are you sure you want to reset ALL progress? This action cannot be undone.')) {
+                profileData = { profile1: {}, profile2: {} };
+                saveData();
+                renderRequirements();
+                updateProgress();
+                showNotification('All progress has been reset');
+            }
+        }
+
+        // Add event listeners
+        document.getElementById('profile1Name').addEventListener('input', updateProfileNames);
+        document.getElementById('profile2Name').addEventListener('input', updateProfileNames);
+        document.getElementById('webhookUrl').addEventListener('input', updateProfileNames);
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            renderRequirements();
+            updateProgress();
+        });
+
+        // Initialize immediately if DOM is already loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                loadData();
+                renderRequirements();
+                updateProgress();
+            });
+        } else {
+            loadData();
+            renderRequirements();
+            updateProgress();
+        }
+    </script>
+</body>
+</html>
