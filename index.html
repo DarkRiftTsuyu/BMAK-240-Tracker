@@ -702,13 +702,21 @@
 
             for (let attempt = 0; attempt < maxRetries; attempt++) {
                 try {
-                    const response = await fetch(webhookUrl, {
+                    const proxyUrl = "https://discord-webhook-proxy-cyqu.onrender.com/send-discord";
+                    const apiKey = "darkriftchlorinepilot240tracker"; // same as in Render env vars
+
+                    const response = await fetch(proxyUrl, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'x-api-key': apiKey
                         },
-                        body: JSON.stringify(payload)
+                        body: JSON.stringify({
+                            webhookUrl: webhookUrl,  // still forward the real webhook
+                            payload: payload
+                        })
                     });
+
 
                     if (response.status === 429) {
                         // Rate limited - get retry-after header
